@@ -94,7 +94,7 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(includedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
 am__DEPENDENCIES_1 =
 libcdel_la_DEPENDENCIES = $(am__DEPENDENCIES_1)
-am_libcdel_la_OBJECTS = lib.lo
+am_libcdel_la_OBJECTS = libcdel.lo
 libcdel_la_OBJECTS = $(am_libcdel_la_OBJECTS)
 libcdel_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -248,12 +248,13 @@ AM_CPPFLAGS = \
 	$(LIBCDEL_CFLAGS)
 
 AM_CFLAGS = \
+	 -std=gnu99 \
 	 -Wall\
 	 -O3
 
 lib_LTLIBRARIES = libcdel.la
 libcdel_la_SOURCES = \
-	lib.c
+	libcdel.c
 
 libcdel_la_LDFLAGS = 
 libcdel_la_LIBADD = $(libcrypto_LIBS)
@@ -335,7 +336,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/lib.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libcdel.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

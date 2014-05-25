@@ -9,6 +9,7 @@ AM_CPPFLAGS = \
 	$(LIBCDEL_CFLAGS)
 
 AM_CFLAGS =\
+	 -std=gnu99 \
 	 -Wall\
 	 -O3
 
@@ -16,7 +17,7 @@ lib_LTLIBRARIES = libcdel.la
 
 
 libcdel_la_SOURCES = \
-	lib.c
+	libcdel.c
 
 libcdel_la_LDFLAGS = 
 

@@ -17,4 +17,5 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-int libcdel_func (void);
+unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error);
+char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error);
