@@ -21,3 +21,4 @@ unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length,
 char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error);
 
 unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error);
+char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error);

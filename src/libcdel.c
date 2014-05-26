@@ -28,12 +28,41 @@
 
 static const char* base58_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 
-int make_big_endian(BIGNUM *num, unsigned char *buff, size_t buff_len);
+int make_big_endian_get(BIGNUM *num, unsigned char **buff);
+int make_big_endian_set(BIGNUM *num, unsigned char *buff, size_t buff_len);
 int reverse(unsigned char *buff, size_t len);
 
 unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error)
 {
 	unsigned char *out_buffer = NULL;
+    char *str_ptr = NULL;
+    unsigned char b = 0;
+    if ((in_string == NULL) || (data_length == NULL))
+	{
+		if (error != NULL) *error = EINVAL;
+		return NULL;
+	}
+    *data_length = strlen(in_string);
+    if (*data_length == 0)
+    {
+		if (error != NULL) *error = EINVAL;
+		return NULL;
+	}
+    *data_length /= 2;
+    out_buffer = (unsigned char *)malloc(*data_length);
+    if (out_buffer == NULL)
+    {
+		if (error != NULL) *error = ENOMEM;
+		return NULL;
+	}
+    
+    str_ptr = in_string;
+    for (size_t idx = 0; idx < *data_length; idx++)
+    {
+        sscanf(str_ptr, "%02hhX", &b);
+        out_buffer[idx] = b;
+        str_ptr += 2;
+    }
     
     return out_buffer;
 }
@@ -73,7 +102,7 @@ unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buf
     BN_dec2bn(&bn58, "58");
     BN_dec2bn(&bn, "0");
     BN_dec2bn(&bnChar, "0");
-    unsigned char temp_buff[4096]; // This should be big enough.
+    unsigned char *temp_buff = NULL; //[4096]; // This should be big enough.
     unsigned char *out_buff = NULL;
     unsigned int num_size = 0;
     
@@ -118,7 +147,7 @@ unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buf
     
     // Get bignum as little endian data
     //std::vector<unsigned char> vchTmp = bn.getvch();
-    num_size = make_big_endian(bn, temp_buff, sizeof(temp_buff));
+    num_size = make_big_endian_get(bn, &temp_buff);
     if (num_size == 0)
     {
         if (error != NULL) *error = ERANGE;
@@ -157,20 +186,157 @@ unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buf
     BN_free(bn);
     BN_free(bnChar);
     BN_CTX_free(pctx);
+    free(temp_buff);
     
     return out_buff;
 }
 
-int make_big_endian(BIGNUM *num, unsigned char *buff, size_t buff_len)
+char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
-    memset(buff, 0, buff_len);
+    char *out_string = NULL;
+    unsigned char *temp_buff = NULL;
+    size_t idx = 0;
+    
+    BN_CTX *pctx = BN_CTX_new();
+    BIGNUM *bn58 = BN_new(); // = 58;
+    BIGNUM *bn0 = BN_new(); // = 0;
+    BIGNUM *bn = BN_new();
+    BIGNUM *dv = BN_new();
+    BIGNUM *rem = BN_new();
+    
+    BN_dec2bn(&bn58, "58");
+    BN_dec2bn(&bn0, "0");
+    BN_dec2bn(&bn, "0");
+    BN_dec2bn(&dv, "0");
+    BN_dec2bn(&rem, "0");
+    
+    // Convert big endian data to little endian
+    // Extra zero at the end make sure bignum will interpret as a positive number
+    temp_buff = (unsigned char *)malloc(data_length + 1);
+    if (temp_buff == NULL)
+    {
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
+    memset(temp_buff, 0, (data_length + 1));
+    memcpy(temp_buff, in_buffer, data_length);
+    if (reverse(temp_buff, data_length) == 0)
+    {
+        if (error != NULL) *error = ERANGE;
+        free(temp_buff);
+        return NULL;
+    }
+    
+    // Convert little endian data to bignum
+    if (make_big_endian_set(bn, temp_buff, (data_length + 1)) == 0)
+    {
+        if (error != NULL) *error = ERANGE;
+        free(temp_buff);
+        return NULL;
+    }
+    
+    // Expected size increase from base58 conversion is approximately 137%
+    // use 140% to be safe
+    idx = data_length + (data_length * (140 / 100) + 1);
+    out_string = (char *)malloc(idx);
+    if (out_string == NULL)
+    {
+        if (error != NULL) *error = ERANGE;
+        free(temp_buff);
+        return NULL;
+    }
+    memset(out_string, 0, idx);
+    
+    idx = 0;
+    while (BN_cmp(bn, bn0) == 1) //(bn > bn0) //fix
+    {
+        if (!BN_div(dv, rem, bn, bn58, pctx))
+        {
+            if (error != NULL) *error = ERANGE;
+            free(temp_buff);
+            return NULL;
+        }
+        BN_copy(bn, dv);
+        //bn = dv; // fix
+        unsigned int c = (unsigned int)BN_get_word(rem); //rem.getulong();
+        out_string[idx] = base58_chars[c];
+        idx++;
+        //strncat(out_string, &pszBase58[c], 1);
+        //str += pszBase58[c];
+    }
+    // Make sure string is null terminated.
+    out_string[idx] = '\0';
+    
+    // Leading zeroes encoded as base58 zeros
+    idx = strlen(out_string);
+    for (size_t p = 0; p < data_length; p++)
+    {
+        if (in_buffer[p] != 0) break;
+        out_string[idx] = base58_chars[0];
+        idx++;
+    }
+    // Make sure string is null terminated.
+    out_string[idx] = '\0';
+    
+    //for (const unsigned char* p = pbegin; p < pend && *p == 0; p++)
+    //str += pszBase58[0];
+    
+    BN_free(bn0);
+    BN_free(bn58);
+    BN_free(bn);
+    BN_free(dv);
+    BN_free(rem);
+    BN_CTX_free(pctx);
+    free(temp_buff);
+    
+    reverse((unsigned char *)out_string, strlen(out_string));
+    
+    return out_string;
+}
+
+int make_big_endian_set(BIGNUM *num, unsigned char *buff, size_t buff_len)
+{
+    //std::vector<unsigned char> vch2(vch.size() + 4);
+    size_t data_size = buff_len + 4;
+    unsigned char *temp = (unsigned char *)malloc(data_size);
+    if (temp == NULL) return 0;
+    // BIGNUM's byte stream format expects 4 bytes of
+    // big endian size data info at the front
+    temp[0] = (buff_len >> 24) & 0xff;
+    temp[1] = (buff_len >> 16) & 0xff;
+    temp[2] = (buff_len >> 8) & 0xff;
+    temp[3] = (buff_len >> 0) & 0xff;
+    // swap data to big endian
+    //reverse_copy(vch.begin(), vch.end(), vch2.begin() + 4); // memcpy reverse
+    memcpy((temp + 4), buff, buff_len);
+    if (reverse((temp + 4), buff_len) == 0)
+    {
+        free(temp);
+        return 0;
+    }
+    BN_mpi2bn(&temp[0], data_size, num);
+    free(temp);
+    
+    return 1;
+}
+
+int make_big_endian_get(BIGNUM *num, unsigned char **buff)
+{
+    unsigned char *lbuff = NULL;
     unsigned int num_size = BN_bn2mpi(num, NULL);
     if (num_size <= 4) return 0;
-    //std::vector<unsigned char> vch(nSize);
-    BN_bn2mpi(num, &buff[0]);
-    memcpy(buff, (buff + 4), (num_size - 4));
+    lbuff = (unsigned char *)malloc(num_size);
+    if (lbuff == NULL) return 0;
+    memset(lbuff, 0, num_size);
+    BN_bn2mpi(num, &lbuff[0]);
+    memcpy(lbuff, (lbuff + 4), (num_size - 4));
     //vch.erase(vch.begin(), vch.begin() + 4);
-    if (reverse(buff, (num_size - 4)) == 0) return 0;
+    if (reverse(lbuff, (num_size - 4)) == 0)
+    {
+        free(lbuff);
+        return 0;
+    }
+    *buff = lbuff;
     
     return (num_size - 4);
 }
