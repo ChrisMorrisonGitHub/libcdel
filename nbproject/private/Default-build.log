@@ -1,0 +1,20 @@
+/usr/bin/make  all-recursive
+make[1]: Entering directory `/home/chris/libcdel'
+Making all in src
+make[2]: Entering directory `/home/chris/libcdel/src'
+/bin/bash ../libtool --tag=CC   --mode=compile /usr/bin/gcc -std=gnu99 -DHAVE_CONFIG_H -I. -I..  -DPACKAGE_LOCALE_DIR=\""/usr/local/share/locale"\" -DPACKAGE_SRC_DIR=\""."\" -DPACKAGE_DATA_DIR=\""/usr/local/share/libcdel"\"   -std=gnu99 -Wall -O3 -g3 -gdwarf-2 -MT libcdel.lo -MD -MP -MF .deps/libcdel.Tpo -c -o libcdel.lo libcdel.c
+libtool: compile:  /usr/bin/gcc -std=gnu99 -DHAVE_CONFIG_H -I. -I.. -DPACKAGE_LOCALE_DIR=\"/usr/local/share/locale\" -DPACKAGE_SRC_DIR=\".\" -DPACKAGE_DATA_DIR=\"/usr/local/share/libcdel\" -std=gnu99 -Wall -O3 -g3 -gdwarf-2 -MT libcdel.lo -MD -MP -MF .deps/libcdel.Tpo -c libcdel.c  -fPIC -DPIC -o .libs/libcdel.o
+libcdel.c: In function 'cdel_encode_as_base64_string':
+libcdel.c:406:40: error: expected ';', ',' or ')' before 'size_t'
+libcdel.c:469:1: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+libcdel.c:550:37: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+libcdel.c:565:37: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+libcdel.c:580:30: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+libcdel.c:599:32: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+libcdel.c:629:1: error: expected '{' at end of input
+libcdel.c:629:1: warning: control reaches end of non-void function [-Wreturn-type]
+make[2]: *** [libcdel.lo] Error 1
+make[2]: Leaving directory `/home/chris/libcdel/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/home/chris/libcdel'
+make: *** [all] Error 2

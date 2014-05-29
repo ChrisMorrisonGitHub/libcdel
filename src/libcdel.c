@@ -31,31 +31,34 @@ static const char* base58_chars = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkm
 int make_big_endian_get(BIGNUM *num, unsigned char **buff);
 int make_big_endian_set(BIGNUM *num, unsigned char *buff, size_t buff_len);
 int reverse(unsigned char *buff, size_t len);
+char base64_encode_byte(unsigned char u);
+unsigned char base64_decode_byte(char c);
+int is_base64(char c);
 
 unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error)
 {
-	unsigned char *out_buffer = NULL;
+    unsigned char *out_buffer = NULL;
     char *str_ptr = NULL;
     unsigned char b = 0;
     if ((in_string == NULL) || (data_length == NULL))
-	{
-		if (error != NULL) *error = EINVAL;
-		return NULL;
-	}
+    {
+        if (error != NULL) *error = EINVAL;
+        return NULL;
+    }
     *data_length = strlen(in_string);
     if (*data_length == 0)
     {
-		if (error != NULL) *error = EINVAL;
-		return NULL;
-	}
+        if (error != NULL) *error = EINVAL;
+        return NULL;
+    }
     *data_length /= 2;
-    out_buffer = (unsigned char *)malloc(*data_length);
+    out_buffer = (unsigned char *) malloc(*data_length);
     if (out_buffer == NULL)
     {
-		if (error != NULL) *error = ENOMEM;
-		return NULL;
-	}
-    
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
+
     str_ptr = in_string;
     for (size_t idx = 0; idx < *data_length; idx++)
     {
@@ -63,34 +66,34 @@ unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length,
         out_buffer[idx] = b;
         str_ptr += 2;
     }
-    
+
     return out_buffer;
 }
 
 char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
-	if ((in_buffer == NULL) || (data_length == 0))
-	{
-		if (error != NULL) *error = EINVAL;
-		return NULL;
-	}
-	size_t string_len = (data_length * 2) + 1;
-	char *out_string = (char *)malloc(string_len);
-	if (out_string == NULL)
-	{
-		if (error != NULL) *error = ENOMEM;
-		return NULL;
-	}
+    if ((in_buffer == NULL) || (data_length == 0))
+    {
+        if (error != NULL) *error = EINVAL;
+        return NULL;
+    }
+    size_t string_len = (data_length * 2) + 1;
+    char *out_string = (char *) malloc(string_len);
+    if (out_string == NULL)
+    {
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
 
-	char *buff_ptr = out_string;
-	for (size_t idx = 0; idx < data_length; idx++)
-	{
-		sprintf(buff_ptr, "%02hhX", in_buffer[idx]);
-		buff_ptr += 2;
-	}
+    char *buff_ptr = out_string;
+    for (size_t idx = 0; idx < data_length; idx++)
+    {
+        sprintf(buff_ptr, "%02hhX", in_buffer[idx]);
+        buff_ptr += 2;
+    }
 
-	if (error != NULL) *error = 0;
-	return out_string;
+    if (error != NULL) *error = 0;
+    return out_string;
 }
 
 unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error)
@@ -360,14 +363,12 @@ int reverse(unsigned char *buff, size_t len)
     return 1;
 }
 
-
-
-int base32_decode(const uint8_t *encoded, uint8_t *result, int bufSize) {
+int base32_decode(const unsigned char *encoded, unsigned char *result, int bufSize) {
   int buffer = 0;
   int bitsLeft = 0;
   int count = 0;
-  for (const uint8_t *ptr = encoded; count < bufSize && *ptr; ++ptr) {
-    uint8_t ch = *ptr;
+  for (const unsigned char *ptr = encoded; count < bufSize && *ptr; ++ptr) {
+    unsigned char ch = *ptr;
     if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-') {
       continue;
     }
@@ -404,7 +405,218 @@ int base32_decode(const uint8_t *encoded, uint8_t *result, int bufSize) {
   return count;
 }
 
-int base32_encode(const uint8_t *data, int length, uint8_t *result,
+char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error)
+{
+    size_t i;
+    char *out_buffer = NULL;
+    char *p = NULL;
+    size_t len = 0;
+    unsigned char b1 = 0;
+    unsigned char b2 = 0;
+    unsigned char b3 = 0;
+    unsigned char b4 = 0;
+    unsigned char b5 = 0;
+    unsigned char b6 = 0;
+    unsigned char b7 = 0;
+
+    if (in_buffer == NULL)
+    {
+        if (error != NULL) *error = EINVAL;
+        return NULL;
+    }
+
+    if (data_length == 0) data_length = strlen((char *) in_buffer);
+
+    len = data_length * (4 / 3 + 4) + 1;
+    out_buffer = (char *) malloc(len);
+    if (out_buffer == NULL)
+    {
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
+    memset(out_buffer, 0, len);
+
+    p = out_buffer;
+
+    for (i = 0; i < data_length; i += 3)
+    {
+        b1 = 0;
+        b2 = 0;
+        b3 = 0;
+        b4 = 0;
+        b5 = 0;
+        b6 = 0;
+        b7 = 0;
+
+        b1 = in_buffer[i];
+
+        if ((i + 1) < data_length) b2 = in_buffer[i + 1];
+
+        if ((i + 2) < data_length) b3 = in_buffer[i + 2];
+
+        b4 = b1 >> 2;
+        b5 = ((b1 & 0x3) << 4) | (b2 >> 4);
+        b6 = ((b2 & 0xf) << 2) | (b3 >> 6);
+        b7 = b3 & 0x3f;
+
+        *p++ = base64_encode_byte(b4);
+        *p++ = base64_encode_byte(b5);
+
+        if ((i + 1) < data_length)
+        {
+            *p++ = base64_encode_byte(b6);
+        }
+        else
+        {
+            *p++ = '=';
+        }
+
+        if ((i + 2) < data_length)
+        {
+            *p++ = base64_encode_byte(b7);
+        }
+        else
+        {
+            *p++ = '=';
+        }
+    }
+
+    return out_buffer;
+}
+
+unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error)
+{
+    size_t k;
+    size_t l = strlen(in_string) + 1;
+    if (buff_len == NULL)
+    {
+        if (error != NULL) *error = EINVAL;
+        return NULL;
+    }
+    unsigned char *buf = (unsigned char *)malloc(l);
+    if (buf == NULL)
+    {
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
+    unsigned char *out_buffer = (unsigned char *)malloc(l);
+    if (out_buffer == NULL)
+    {
+        if (error != NULL) *error = ENOMEM;
+        return NULL;
+    }
+    memset(buf, 0, l);
+    memset(out_buffer, 0, l);
+    unsigned char *dest = out_buffer;
+    char c1 = 0;
+    char c2 = 0;
+    char c3 = 0;
+    char c4 = 0;
+    unsigned char b1 = 0;
+    unsigned char b2 = 0;
+    unsigned char b3 = 0;
+    unsigned char b4 = 0;
+
+    /* Ignore non base64 chars as per the POSIX standard */
+    for (k = 0, l = 0; in_string[k]; k++)
+    {
+        if (is_base64(in_string[k]) == 1) buf[l++] = in_string[k];
+    }
+
+    for (k = 0; k < l; k += 4)
+    {
+        c1 = 'A';
+        c2 = 'A';
+        c3 = 'A';
+        c4 = 'A';
+        b1 = 0;
+        b2 = 0;
+        b3 = 0;
+        b4 = 0;
+
+        c1 = buf[k];
+
+        if (k + 1 < l)
+        {
+            c2 = buf[k + 1];
+        }
+
+        if (k + 2 < l)
+        {
+            c3 = buf[k + 2];
+        }
+
+        if (k + 3 < l)
+        {
+            c4 = buf[k + 3];
+        }
+
+        b1 = base64_decode_byte(c1);
+        b2 = base64_decode_byte(c2);
+        b3 = base64_decode_byte(c3);
+        b4 = base64_decode_byte(c4);
+
+        *out_buffer++ = ((b1 << 2) | (b2 >> 4));
+
+        if (c3 != '=')
+        {
+            *out_buffer++ = (((b2 & 0xf) << 4) | (b3 >> 2));
+        }
+
+        if (c4 != '=')
+        {
+            *out_buffer++ = (((b3 & 0x3) << 6) | b4);
+        }
+    }
+
+    free(buf);
+
+    *buff_len = (size_t)(out_buffer - dest);
+
+    return out_buffer;
+}
+
+char base64_encode_byte(unsigned char u)
+{
+    if (u < 26) return 'A' + u;
+    if (u < 52) return 'a' + (u - 26);
+    if (u < 62) return '0' + (u - 52);
+    if (u == 62) return '+';
+
+    return '/';
+}
+
+unsigned char base64_decode_byte(char c)
+{
+
+    if (c >= 'A' && c <= 'Z') return (c - 'A');
+    if (c >= 'a' && c <= 'z') return (c - 'a' + 26);
+    if (c >= '0' && c <= '9') return (c - '0' + 52);
+    if (c == '+') return 62;
+
+    return 63;
+}
+
+int is_base64(char c)
+{
+
+    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') ||
+            (c >= '0' && c <= '9') || (c == '+') ||
+            (c == '/') || (c == '='))
+    {
+
+        return 1;
+
+    }
+
+    return 0;
+}
+
+
+
+
+
+int base32_encode(const unsigned char *data, int length, unsigned char *result,
                   int bufSize) {
   if (length < 0 || length > (1 << 28)) {
     return -1;
