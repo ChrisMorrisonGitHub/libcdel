@@ -20,16 +20,17 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error);
-char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error);
-
-unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error);
-char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error);
-
-unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error);
-char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error);
-
+    
+    unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error);
+    char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error);
+    
+    int cdel_is_base58_string(const char *str);
+    unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error);
+    char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error);
+    
+    unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error);
+    char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error);
+    
 #ifdef __cplusplus
 }
 #endif

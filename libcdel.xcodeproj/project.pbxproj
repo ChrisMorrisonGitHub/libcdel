@@ -8,12 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		8387B19E197C4A9A00FDF2F7 /* libcdel.c in Sources */ = {isa = PBXBuildFile; fileRef = 8387B19A197C4A9A00FDF2F7 /* libcdel.c */; };
-		8387B19F197C4A9A00FDF2F7 /* libcdel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8387B19B197C4A9A00FDF2F7 /* libcdel.h */; };
+		8387B19F197C4A9A00FDF2F7 /* libcdel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8387B19B197C4A9A00FDF2F7 /* libcdel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8387B1A1197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8387B1A0197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		834F409F197C49ED00E2284E /* liblibcdel.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblibcdel.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		834F409F197C49ED00E2284E /* libcdel.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libcdel.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		8387B19A197C4A9A00FDF2F7 /* libcdel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = libcdel.c; sourceTree = "<group>"; };
 		8387B19B197C4A9A00FDF2F7 /* libcdel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libcdel.h; sourceTree = "<group>"; };
 		8387B1A0197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = usr/lib/libcrypto.0.9.8.dylib; sourceTree = SDKROOT; };
@@ -43,7 +43,7 @@
 		834F40A0197C49ED00E2284E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				834F409F197C49ED00E2284E /* liblibcdel.dylib */,
+				834F409F197C49ED00E2284E /* libcdel.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -94,7 +94,7 @@
 			);
 			name = libcdel;
 			productName = libcdel;
-			productReference = 834F409F197C49ED00E2284E /* liblibcdel.dylib */;
+			productReference = 834F409F197C49ED00E2284E /* libcdel.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -209,7 +209,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = cdel;
 			};
 			name = Debug;
 		};
@@ -217,7 +217,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				EXECUTABLE_PREFIX = lib;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = cdel;
 			};
 			name = Release;
 		};

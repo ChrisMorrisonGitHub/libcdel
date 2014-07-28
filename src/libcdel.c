@@ -96,6 +96,22 @@ char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, in
     return out_string;
 }
 
+int cdel_is_base58_string(const char *str)
+{
+    if (str == NULL) return 0;
+    size_t len = (strlen(str));
+    if (len == 0) return 0;
+    char c = 0;
+    
+    for (int i = 0; i < len; i++)
+    {
+        c = str[i];
+        if (strchr(base58_chars, c) == NULL) return 0;
+    }
+    
+    return 1;
+}
+
 unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error)
 {
     BN_CTX *pctx = BN_CTX_new();

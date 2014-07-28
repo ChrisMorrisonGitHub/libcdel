@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "834F409E197C49ED00E2284E"
-               BuildableName = "liblibcdel.dylib"
+               BuildableName = "libcdel.dylib"
                BlueprintName = "libcdel"
                ReferencedContainer = "container:libcdel.xcodeproj">
             </BuildableReference>
@@ -29,6 +29,15 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "83830B07197C0A0D00F16E57"
+            BuildableName = "libcdel-tests"
+            BlueprintName = "libcdel-tests"
+            ReferencedContainer = "container:../Resources/libcdel-tests/libcdel-tests.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
