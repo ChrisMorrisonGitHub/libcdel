@@ -35,7 +35,7 @@ char base64_encode_byte(unsigned char u);
 unsigned char base64_decode_byte(char c);
 int is_base64(char c);
 
-unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error)
+LIBCDEL_API unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length, int *error)
 {
     unsigned char *out_buffer = NULL;
     char *str_ptr = NULL;
@@ -70,7 +70,7 @@ unsigned char *cdel_decode_from_hex_string(char *in_string, size_t *data_length,
     return out_buffer;
 }
 
-char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error)
+LIBCDEL_API char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
     if ((in_buffer == NULL) || (data_length == 0))
     {
@@ -96,7 +96,7 @@ char *cdel_encode_as_hex_string(unsigned char *in_buffer, size_t data_length, in
     return out_string;
 }
 
-int cdel_is_base58_string(const char *str)
+LIBCDEL_API int cdel_is_base58_string(const char *str)
 {
     if (str == NULL) return 0;
     size_t len = (strlen(str));
@@ -112,7 +112,7 @@ int cdel_is_base58_string(const char *str)
     return 1;
 }
 
-unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error)
+LIBCDEL_API unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error)
 {
     BN_CTX *pctx = BN_CTX_new();
     BIGNUM *bn58 = BN_new(); // = 58;
@@ -210,7 +210,7 @@ unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buf
     return out_buff;
 }
 
-char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error)
+LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
     char *out_string = NULL;
     unsigned char *temp_buff = NULL;
@@ -379,7 +379,7 @@ int reverse(unsigned char *buff, size_t len)
     return 1;
 }
 
-int base32_decode(const unsigned char *encoded, unsigned char *result, int bufSize) {
+LIBCDEL_API int base32_decode(const unsigned char *encoded, unsigned char *result, int bufSize) {
   int buffer = 0;
   int bitsLeft = 0;
   int count = 0;
@@ -421,7 +421,7 @@ int base32_decode(const unsigned char *encoded, unsigned char *result, int bufSi
   return count;
 }
 
-char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error)
+LIBCDEL_API char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
     size_t i;
     char *out_buffer = NULL;
@@ -500,7 +500,7 @@ char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length,
     return out_buffer;
 }
 
-unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error)
+LIBCDEL_API unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error)
 {
     size_t k;
     size_t l = strlen(in_string) + 1;
@@ -632,7 +632,7 @@ int is_base64(char c)
 
 
 
-int base32_encode(const unsigned char *data, int length, unsigned char *result,
+LIBCDEL_API int base32_encode(const unsigned char *data, int length, unsigned char *result,
                   int bufSize) {
   if (length < 0 || length > (1 << 28)) {
     return -1;
