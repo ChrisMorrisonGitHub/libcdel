@@ -7,15 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8387B19E197C4A9A00FDF2F7 /* libcdel.c in Sources */ = {isa = PBXBuildFile; fileRef = 8387B19A197C4A9A00FDF2F7 /* libcdel.c */; };
+		8380A59E19918B26005A555E /* base16.c in Sources */ = {isa = PBXBuildFile; fileRef = 8380A59A19918B26005A555E /* base16.c */; };
+		8380A59F19918B26005A555E /* base32.c in Sources */ = {isa = PBXBuildFile; fileRef = 8380A59B19918B26005A555E /* base32.c */; };
+		8380A5A019918B26005A555E /* base58.c in Sources */ = {isa = PBXBuildFile; fileRef = 8380A59C19918B26005A555E /* base58.c */; };
+		8380A5A119918B26005A555E /* base64.c in Sources */ = {isa = PBXBuildFile; fileRef = 8380A59D19918B26005A555E /* base64.c */; };
 		8387B19F197C4A9A00FDF2F7 /* libcdel.h in Headers */ = {isa = PBXBuildFile; fileRef = 8387B19B197C4A9A00FDF2F7 /* libcdel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8387B1A1197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 8387B1A0197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		834F409F197C49ED00E2284E /* libcdel.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libcdel.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
-		8387B19A197C4A9A00FDF2F7 /* libcdel.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = libcdel.c; sourceTree = "<group>"; };
-		8387B19B197C4A9A00FDF2F7 /* libcdel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = libcdel.h; sourceTree = "<group>"; };
+		8380A59A19918B26005A555E /* base16.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base16.c; path = src/base16.c; sourceTree = SOURCE_ROOT; };
+		8380A59B19918B26005A555E /* base32.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base32.c; path = src/base32.c; sourceTree = SOURCE_ROOT; };
+		8380A59C19918B26005A555E /* base58.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base58.c; path = src/base58.c; sourceTree = SOURCE_ROOT; };
+		8380A59D19918B26005A555E /* base64.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = base64.c; path = src/base64.c; sourceTree = SOURCE_ROOT; };
+		8387B19B197C4A9A00FDF2F7 /* libcdel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = libcdel.h; path = src/libcdel.h; sourceTree = SOURCE_ROOT; };
 		8387B1A0197C4AF900FDF2F7 /* libcrypto.0.9.8.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.0.9.8.dylib; path = usr/lib/libcrypto.0.9.8.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -51,7 +57,10 @@
 		8387B199197C4A9A00FDF2F7 /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				8387B19A197C4A9A00FDF2F7 /* libcdel.c */,
+				8380A59A19918B26005A555E /* base16.c */,
+				8380A59B19918B26005A555E /* base32.c */,
+				8380A59C19918B26005A555E /* base58.c */,
+				8380A59D19918B26005A555E /* base64.c */,
 				8387B19B197C4A9A00FDF2F7 /* libcdel.h */,
 			);
 			name = Source;
@@ -128,7 +137,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8387B19E197C4A9A00FDF2F7 /* libcdel.c in Sources */,
+				8380A59E19918B26005A555E /* base16.c in Sources */,
+				8380A59F19918B26005A555E /* base32.c in Sources */,
+				8380A5A119918B26005A555E /* base64.c in Sources */,
+				8380A5A019918B26005A555E /* base58.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

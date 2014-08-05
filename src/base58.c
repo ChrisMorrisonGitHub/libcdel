@@ -293,7 +293,7 @@ int make_big_endian_set(BIGNUM *num, unsigned char *buff, size_t buff_len)
         free(temp);
         return 0;
     }
-    BN_mpi2bn(&temp[0], data_size, num);
+    BN_mpi2bn(&temp[0], (int)data_size, num);
     free(temp);
     
     return 1;
