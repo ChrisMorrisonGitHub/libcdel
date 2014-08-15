@@ -1,21 +1,22 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
+
 /*
-* base16.c
-* Copyright (C) 2014 Chris Morrison <chris-morrison@cyberservices.com>
-*
-* libcdel is free software: you can redistribute it and/or modify it
-* under the terms of the GNU General Public License as published by the
-* Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* libcdel is distributed in the hope that it will be useful, but
-* WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-* See the GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License along
-* with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * base16.c
+ * Copyright (C) 2014 Chris Morrison <chris-morrison@cyberservices.com>
+ *
+ * libcdel is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * libcdel is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along
+ * with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,22 +25,23 @@
 #include <ctype.h>
 #include "libcdel.h"
 
-///////////////////////////////////////////////////////////////////////////
-// Verifies the given null terminated string to ensure that it is a valid
-// base16 (hex) encoded string.
-// 
-// Returns:         0 - The string is not a valid base16 string, or the
-//                      given string was NULL or empty.
-//                  1 - The string is a valid base16 string.
-///////////////////////////////////////////////////////////////////////////
+/**************************************************************************
+ * Verifies the given null terminated string to ensure that it is a valid
+ * base16 (hex) encoded string.
+ *
+ * Returns:         0 - The string is not a valid base16 string, or the
+ *                      given string was NULL or empty.
+ *                  1 - The string is a valid base16 string.
+ **************************************************************************/
 LIBCDEL_API int cdel_is_base16_string(const char *str)
 {
-	if ((str == NULL) || (*str == '\0')) return 0;
 	char *t_str = (char *)str;
 	char c;
 	size_t valid_chars = 0;
 	int lower_case = 0;
 	int upper_case = 0;
+
+	if ((str == NULL) || (*str == '\0')) return 0;
 
 	while ((c = *t_str) != '\0')
 	{
@@ -72,21 +74,26 @@ LIBCDEL_API int cdel_is_base16_string(const char *str)
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API char *cdel_encode_as_base16_string(unsigned char *in_buffer, size_t data_length, int *error)
 {
+	size_t string_len = 0;
+	char *out_string = NULL;
+	char *buff_ptr = NULL;
+	size_t idx = 0;
+
 	if ((in_buffer == NULL) || (data_length == 0))
 	{
 		if (error != NULL) *error = EINVAL;
 		return NULL;
 	}
-	size_t string_len = (data_length * 2) + 1;
-	char *out_string = (char *)malloc(string_len);
+	string_len = (data_length * 2) + 1;
+	out_string = (char *)malloc(string_len);
 	if (out_string == NULL)
 	{
 		if (error != NULL) *error = ENOMEM;
 		return NULL;
 	}
 
-	char *buff_ptr = out_string;
-	for (size_t idx = 0; idx < data_length; idx++)
+	buff_ptr = out_string;
+	for (idx = 0; idx < data_length; idx++)
 	{
 		sprintf(buff_ptr, "%02hhX", in_buffer[idx]);
 		buff_ptr += 2;
@@ -116,11 +123,14 @@ LIBCDEL_API unsigned char *cdel_decode_from_base16_string(char *in_string, size_
 	unsigned char *out_buffer = NULL;
 	char *str_ptr = NULL;
 	unsigned char b = 0;
+	size_t idx = 0;
+
 	if ((in_string == NULL) || (data_length == NULL))
 	{
 		if (error != NULL) *error = EINVAL;
 		return NULL;
 	}
+
 	*data_length = strlen(in_string);
 	if (*data_length == 0)
 	{
@@ -136,7 +146,7 @@ LIBCDEL_API unsigned char *cdel_decode_from_base16_string(char *in_string, size_
 	}
 
 	str_ptr = in_string;
-	for (size_t idx = 0; idx < *data_length; idx++)
+	for (idx = 0; idx < *data_length; idx++)
 	{
 		sscanf(str_ptr, "%02hhX", &b);
 		out_buffer[idx] = b;

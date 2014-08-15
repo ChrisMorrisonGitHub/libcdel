@@ -36,11 +36,12 @@ static const char* base32_chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API int cdel_is_base32_string(const char *str)
 {
-	if ((str == NULL) || (*str == '\0')) return 0;
 	char *t_str = (char *)str;
 	char c;
 	size_t valid_chars = 0;
 	int eq_found = 0;
+
+	if ((str == NULL) || (*str == '\0')) return 0;
 
 	while ((c = *t_str) != '\0')
 	{
@@ -74,17 +75,25 @@ LIBCDEL_API int cdel_is_base32_string(const char *str)
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API int base32_encode(const unsigned char *data, int length, unsigned char *result, int bufSize)
 {
-	if (length < 0 || length >(1 << 28)) {
-		return -1;
-	}
 	int count = 0;
-	if (length > 0) {
-		int buffer = data[0];
-		int next = 1;
-		int bitsLeft = 8;
-		while (count < bufSize && (bitsLeft > 0 || next < length)) {
-			if (bitsLeft < 5) {
-				if (next < length) {
+	int buffer = 0;
+	int next = 0;
+	int bitsLeft = 0;
+	int index = 0;
+
+	if (length < 0 || length >(1 << 28)) return -1;
+
+	if (length > 0)
+	{
+		buffer = data[0];
+		next = 1;
+		bitsLeft = 8;
+		while (count < bufSize && (bitsLeft > 0 || next < length))
+		{
+			if (bitsLeft < 5)
+			{
+				if (next < length)
+				{
 					buffer <<= 8;
 					buffer |= data[next++] & 0xFF;
 					bitsLeft += 8;
@@ -95,14 +104,16 @@ LIBCDEL_API int base32_encode(const unsigned char *data, int length, unsigned ch
 					bitsLeft += pad;
 				}
 			}
-			int index = 0x1F & (buffer >> (bitsLeft - 5));
+			index = 0x1F & (buffer >> (bitsLeft - 5));
 			bitsLeft -= 5;
 			result[count++] = base32_chars[index];
 		}
 	}
-	if (count < bufSize) {
+	if (count < bufSize)
+	{
 		result[count] = '\000';
 	}
+
 	return count;
 }
 
@@ -126,32 +137,42 @@ LIBCDEL_API int base32_decode(const unsigned char *encoded, unsigned char *resul
 	int buffer = 0;
 	int bitsLeft = 0;
 	int count = 0;
-	for (const unsigned char *ptr = encoded; count < bufSize && *ptr; ++ptr) {
-		unsigned char ch = *ptr;
-		if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-') {
-			continue;
-		}
+	const unsigned char *ptr = encoded;
+	unsigned char ch = 0;
+
+	if ((encoded == NULL) || (result == NULL) || (bufSize == 0)) return -1;
+
+	for (ptr = encoded; count < bufSize && *ptr; ++ptr)
+	{
+		char ch = *ptr;
+		if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-') continue;
 		buffer <<= 5;
 
 		// Deal with commonly mistyped characters
-		if (ch == '0') {
+		if (ch == '0')
+		{
 			ch = 'O';
 		}
-		else if (ch == '1') {
+		else if (ch == '1')
+		{
 			ch = 'L';
 		}
-		else if (ch == '8') {
+		else if (ch == '8')
+		{
 			ch = 'B';
 		}
 
 		// Look up one base32 digit
-		if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z')) {
+		if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z'))
+		{
 			ch = (ch & 0x1F) - 1;
 		}
-		else if (ch >= '2' && ch <= '7') {
+		else if (ch >= '2' && ch <= '7')
+		{
 			ch -= '2' - 26;
 		}
-		else {
+		else
+		{
 			return -1;
 		}
 
@@ -162,9 +183,8 @@ LIBCDEL_API int base32_decode(const unsigned char *encoded, unsigned char *resul
 			bitsLeft -= 8;
 		}
 	}
-	if (count < bufSize) {
-		result[count] = '\000';
-	}
+	if (count < bufSize) result[count] = '\000';
+
 	return count;
 }
 
