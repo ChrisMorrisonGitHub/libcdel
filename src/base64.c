@@ -39,11 +39,12 @@ int is_base64(char c);
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API int cdel_is_base64_string(const char *str)
 {
-	if ((str == NULL) || (*str == '\0')) return 0;
-	char *t_str = (char *)str;
+	const char *t_str = (char *)str;
 	char c;
 	size_t valid_chars = 0;
 	int eq_found = 0;
+
+	if ((str == NULL) || (*str == '\0')) return 0;
 
 	while ((c = *t_str) != '\0')
 	{
@@ -171,28 +172,6 @@ LIBCDEL_API char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t 
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error)
 {
-	size_t k;
-	size_t l = strlen(in_string) + 1;
-	if (buff_len == NULL)
-	{
-		if (error != NULL) *error = EINVAL;
-		return NULL;
-	}
-	unsigned char *buf = (unsigned char *)malloc(l);
-	if (buf == NULL)
-	{
-		if (error != NULL) *error = ENOMEM;
-		return NULL;
-	}
-	unsigned char *out_buffer = (unsigned char *)malloc(l);
-	if (out_buffer == NULL)
-	{
-		if (error != NULL) *error = ENOMEM;
-		return NULL;
-	}
-	memset(buf, 0, l);
-	memset(out_buffer, 0, l);
-	unsigned char *dest = out_buffer;
 	char c1 = 0;
 	char c2 = 0;
 	char c3 = 0;
@@ -201,6 +180,36 @@ LIBCDEL_API unsigned char *cdel_decode_from_base64_string(const char* in_string,
 	unsigned char b2 = 0;
 	unsigned char b3 = 0;
 	unsigned char b4 = 0;
+	unsigned char *buf = NULL;
+	unsigned char *out_buffer = NULL;
+	size_t k;
+	size_t l = strlen(in_string) + 1;
+	unsigned char *dest = NULL;
+
+	if (buff_len == NULL)
+	{
+		if (error != NULL) *error = EINVAL;
+		return NULL;
+	}
+
+	buf = (unsigned char *)malloc(l);
+	if (buf == NULL)
+	{
+		if (error != NULL) *error = ENOMEM;
+		return NULL;
+	}
+
+	out_buffer = (unsigned char *)malloc(l);
+	if (out_buffer == NULL)
+	{
+		if (error != NULL) *error = ENOMEM;
+		free(buf);
+		return NULL;
+	}
+	memset(buf, 0, l);
+	memset(out_buffer, 0, l);
+	dest = out_buffer;
+
 
 	/* Ignore non base64 chars as per the POSIX standard */
 	for (k = 0, l = 0; in_string[k]; k++)

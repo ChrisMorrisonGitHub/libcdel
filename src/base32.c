@@ -138,13 +138,13 @@ LIBCDEL_API int base32_decode(const unsigned char *encoded, unsigned char *resul
 	int bitsLeft = 0;
 	int count = 0;
 	const unsigned char *ptr = encoded;
-	unsigned char ch = 0;
+	char ch = 0;
 
 	if ((encoded == NULL) || (result == NULL) || (bufSize == 0)) return -1;
 
 	for (ptr = encoded; count < bufSize && *ptr; ++ptr)
 	{
-		char ch = *ptr;
+		ch = *ptr;
 		if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n' || ch == '-') continue;
 		buffer <<= 5;
 

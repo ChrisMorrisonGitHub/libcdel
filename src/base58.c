@@ -41,10 +41,11 @@ int reverse(unsigned char *buff, size_t len);
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API int cdel_is_base58_string(const char *str)
 {
-	if ((str == NULL) || (*str == '\0')) return 0;
 	char *t_str = (char *)str;
-	char c;
+	char c = 0;
 	size_t valid_chars = 0;
+
+	if ((str == NULL) || (*str == '\0')) return 0;
 
 	while ((c = *t_str) != '\0')
 	{
@@ -75,6 +76,8 @@ LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t 
 	char *out_string = NULL;
 	unsigned char *temp_buff = NULL;
 	size_t idx = 0;
+	unsigned int c = 0;
+	size_t p = 0;
 
 	BN_CTX *pctx = BN_CTX_new();
 	BIGNUM *bn58 = BN_new();
@@ -135,7 +138,7 @@ LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t 
 			return NULL;
 		}
 		BN_copy(bn, dv);
-		unsigned int c = (unsigned int)BN_get_word(rem);
+		c = (unsigned int)BN_get_word(rem);
 		out_string[idx] = base58_chars[c];
 		idx++;
 	}
@@ -144,7 +147,7 @@ LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t 
 
 	// Leading zeroes encoded as base58 zeros
 	idx = strlen(out_string);
-	for (size_t p = 0; p < data_length; p++)
+	for (p = 0; p < data_length; p++)
 	{
 		if (in_buffer[p] != 0) break;
 		out_string[idx] = base58_chars[0];
@@ -183,16 +186,24 @@ LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t 
 ///////////////////////////////////////////////////////////////////////////
 LIBCDEL_API unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error)
 {
-    BN_CTX *pctx = BN_CTX_new();
-    BIGNUM *bn58 = BN_new();
-    BIGNUM *bn = BN_new();
-    BIGNUM *bnChar = BN_new();
-    BN_dec2bn(&bn58, "58");
+	unsigned char *temp_buff = NULL;
+	unsigned char *out_buff = NULL;
+	unsigned int num_size = 0;
+	const char *p = NULL;
+	const char *p1 = NULL;
+	BN_CTX *pctx;
+	BIGNUM *bn58;
+	BIGNUM *bn;
+	BIGNUM *bnChar;
+	int leading_zeros = 0;
+
+	pctx = BN_CTX_new();
+	bn58 = BN_new();
+	bn = BN_new();
+	bnChar = BN_new();
+	BN_dec2bn(&bn58, "58");
     BN_dec2bn(&bn, "0");
-    BN_dec2bn(&bnChar, "0");
-    unsigned char *temp_buff = NULL;
-    unsigned char *out_buff = NULL;
-    unsigned int num_size = 0;
+	BN_dec2bn(&bnChar, "0");
     
     if (buff_len == NULL)
     {
@@ -204,9 +215,9 @@ LIBCDEL_API unsigned char *cdel_decode_from_base58_string(const char* in_string,
         in_string++;
     
     // Convert big endian string to bignum
-    for (const char* p = in_string; *p; p++)
+	for (p = in_string; *p; p++)
     {
-        const char* p1 = strchr(base58_chars, *p);
+		p1 = strchr(base58_chars, *p);
         if (p1 == NULL)
         {
             while (isspace(*p))
@@ -245,8 +256,8 @@ LIBCDEL_API unsigned char *cdel_decode_from_base58_string(const char* in_string,
     if ((num_size >= 2) && (temp_buff[num_size - 1] == 0) && (temp_buff[num_size - 2] >= 0x80)) num_size -= 1;
     
     // Restore leading zeros
-    int leading_zeros = 0;
-    for (const char* p = in_string; *p == base58_chars[0]; p++)
+    leading_zeros = 0;
+    for (p = in_string; *p == base58_chars[0]; p++)
         leading_zeros++;
     
     // Store the length
@@ -322,13 +333,14 @@ int make_big_endian_get(BIGNUM *num, unsigned char **buff)
 
 int reverse(unsigned char *buff, size_t len)
 {
-    size_t ridx = 0;
+	size_t ridx = 0;
+	size_t idx = 0;
     unsigned char *t = (unsigned char *)malloc(len);
     if (t == NULL) return 0;
     memcpy(t, buff, len);
     
     ridx = len - 1;
-    for (size_t idx = 0; idx < len; idx++)
+    for (idx = 0; idx < len; idx++)
     {
         buff[idx] = t[ridx];
         ridx--;
