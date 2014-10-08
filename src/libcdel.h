@@ -18,8 +18,11 @@
 #ifndef _LIBCDEL_H_
 #define _LIBCDEL_H_
 
-#define CDEL_HEX_LOWERCASE 1
-#define CDEL_HEX_UPPERCASE 2
+#define CDEL_HEX_LOWERCASE      1
+#define CDEL_HEX_UPPERCASE      2
+
+#define CDEL_BASE2_GROUPED      3
+#define CDEL_BASE2_UNGROUPED    4
 
 /* Micky$oft stuff */
 #ifdef _WINDOWS
@@ -35,8 +38,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    LIBCDEL_API int cdel_verify_base2_string(const char *str);
+    LIBCDEL_API char *cdel_encode_as_base2_string(unsigned char *in_buffer, size_t data_length, int letter_case, int *error);
+    LIBCDEL_API unsigned char *cdel_decode_base2_string(char *in_string, size_t *data_length, int *error);
     
-	LIBCDEL_API int cdel_verify_base16_string(const char *str);
+    LIBCDEL_API int cdel_verify_base16_string(const char *str);
     LIBCDEL_API char *cdel_encode_as_base16_string(unsigned char *in_buffer, size_t data_length, int letter_case, int *error);
     LIBCDEL_API unsigned char *cdel_decode_base16_string(char *in_string, size_t *data_length, int *error);
 
@@ -44,7 +50,7 @@ extern "C" {
     LIBCDEL_API unsigned char *cdel_decode_from_base58_string(const char* in_string, size_t *buff_len, int *error);
     LIBCDEL_API char *cdel_encode_as_base58_string(unsigned char *in_buffer, size_t data_length, int *error);
     
-	LIBCDEL_API int cdel_is_base64_string(const char *str);
+    LIBCDEL_API int cdel_is_base64_string(const char *str);
     LIBCDEL_API unsigned char *cdel_decode_from_base64_string(const char* in_string, size_t *buff_len, int *error);
     LIBCDEL_API char *cdel_encode_as_base64_string(unsigned char *in_buffer, size_t data_length, int *error);
     

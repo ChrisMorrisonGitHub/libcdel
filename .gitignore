@@ -6,3 +6,5 @@ __history
 
 
 
+/tests/libcdel_tests/build/
+/tests/libcdel_tests/dist/
