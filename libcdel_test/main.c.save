@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   main.c
  * Author: Chris Morrison
  *
@@ -9,16 +9,20 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <string.h>
-#include "../../src/libcdel.h"
+#include "../src/libcdel.h"
 
 char *read_string(FILE *fp);
 
 /*
- * 
+ *
  */
 int main(int argc, char** argv)
 {
-    char base16[128];
+    int cline = 0;
+    char base2[300];
+    char base2spc[300];
+    char base16upc[128];
+    char base16lwr[128];
     char base32[128];
     char base58[128];
     char base64[128];
@@ -40,7 +44,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    if (strcmp(line, "#Base85<TAB>Base16<TAB>Base32<TAB>Base58<TAB>Base64<TAB>Base91") != 0)
+    if (strcmp(line, "#Base2<TAB>Base2Spaced<TAB>Base85<TAB>Base16<TAB>Base32<TAB>Base58<TAB>Base64<TAB>Base91") != 0)
     {
         fprintf(stderr, "ERROR: The token line in the test file is missing, not valid or this test utility to too old.\n");
         return 1;
@@ -53,20 +57,71 @@ int main(int argc, char** argv)
     {
         if (line[0] == '\0') continue;
 
-        memset(base16, 0, 128);
+        memset(base2, 0, 300);
+        memset(base2spc, 0, 300);
+        memset(base16upc, 0, 128);
+        memset(base16lwr, 0, 128);
         memset(base32, 0, 128);
         memset(base58, 0, 128);
         memset(base64, 0, 128);
         memset(base85, 0, 128);
         memset(base91, 0, 128);
 
-        if (sscanf(line, "%s\t%s\t%s\t%s\t%s\t%s", base85, base16, base32, base58, base64, base91) != 6)
+        if (sscanf(line, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s", base2, base2spc, base85, base16, base32, base58, base64, base91) != 8)
         {
             fprintf(stderr, "ERROR: A corrupt, damaged or badly formed line was encountered.\n");
             free(line);
             return 1;
         }
+
+        ++cline;
         
+        /* Test Base2 */
+
+        fprintf(stdout, "Test of base2 verification function, string %02d  (sans spaces)... ", cline);
+        if (cdel_verify_base2_string(base2) == 0)
+        {
+            fprintf(stdout, "\aFAILED\nVerify failed with input %s\n", base2);
+            exit(1);
+        }
+        else
+        {
+            fprintf(stdout, "PASSED\n");
+        }
+        fprintf(stdout, "Test of base2 verification function, string %02d (spaced)...       ", cline);
+        if (cdel_verify_base2_string(base2spc) == 0)
+        {
+            fprintf(stderr, "\aFAILED\nVerify failed with input %s", base2spc);
+            exit(1);
+        }
+        else
+        {
+            fprintf(stdout, "PASSED\n");
+        }
+        
+        /* Test Base16 */
+        
+        fprintf(stdout, "Test of base16 verification function, string %d  (uppercase)...  ", cline);
+        if (cdel_verify_base16_string(base16upc) == 0)
+        {
+            fprintf(stdout, "\aFAILED\nVerify failed with input %s\n", base2);
+            exit(1);
+        }
+        else
+        {
+            fprintf(stdout, "PASSED\n");
+        }
+        /*fprintf(stdout, "Test of base2 verification function, string %d (lowercase)...    ", cline);
+        if (cdel_verify_base16_string(base16lwr) == 0)
+        {
+            fprintf(stderr, "\aFAILED\nVerify failed with input %s", base2spc);
+            exit(1);
+        }
+        else
+        {
+            fprintf(stdout, "PASSED\n");
+        } */
+
         free(line);
     }
 

@@ -1,0 +1,52 @@
+# depslib dependency file v1.0
+1414270517 source:/home/chris/Projects/libcdel/tests/libcdel_tests/libcdel tests/main.c
+	<stdio.h>
+	<stdlib.h>
+
+1412595473 source:/home/chris/Projects/libcdel/src/base16.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	<ctype.h>
+	"libcdel.h"
+
+1412613748 /home/chris/Projects/libcdel/src/libcdel.h
+
+1412619190 source:/home/chris/Projects/libcdel/src/base2.c
+	<stdio.h>
+	"libcdel.h"
+
+1412595473 source:/home/chris/Projects/libcdel/src/base32.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	<ctype.h>
+	"libcdel.h"
+
+1412595473 source:/home/chris/Projects/libcdel/src/base58.c
+	<stdio.h>
+	<ctype.h>
+	<string.h>
+	<stdlib.h>
+	<stddef.h>
+	<errno.h>
+	<openssl/bn.h>
+	"libcdel.h"
+
+1412595473 source:/home/chris/Projects/libcdel/src/base64.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	<ctype.h>
+	"libcdel.h"
+
+1414272833 source:/home/chris/Projects/libcdel/libcdel_test/main.c
+	<stdio.h>
+	<stdlib.h>
+	<errno.h>
+	<string.h>
+	"../src/libcdel.h"
+
